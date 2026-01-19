@@ -1,775 +1,200 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoChat | Современный мессенджер</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Модальное окно авторизации -->
-    <div class="modal-overlay" id="authModal">
-        <div class="modal auth-modal">
-            <div class="modal-header">
-                <h2 class="modal-title">Добро пожаловать в NeoChat</h2>
-                <button class="close-modal" id="closeAuthModal">&times;</button>
-            </div>
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Вход</button>
-                <button class="auth-tab" data-tab="register">Регистрация</button>
+<!-- Обновленный блок профиля в index.html -->
+<div class="chats-container hidden" id="profilePage">
+    <div class="profile-header" id="profileHeader">
+        <!-- Баннер профиля -->
+        <div class="profile-banner" id="profileBanner">
+            <div class="banner-overlay"></div>
+            <button class="banner-edit-btn" id="changeBannerBtn">
+                <i class="fas fa-camera"></i>
+                Изменить баннер
+            </button>
+        </div>
+        
+        <div class="profile-info-container">
+            <div class="profile-avatar-container">
+                <div class="profile-avatar large" id="profileAvatar">
+                    Г
+                </div>
+                <button class="avatar-edit-btn" id="changeAvatarBtn">
+                    <i class="fas fa-camera"></i>
+                </button>
             </div>
             
-            <form id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label>Ваш никнейм</label>
-                    <div class="input-with-prefix">
-                        <span class="input-prefix">@</span>
-                        <input type="text" id="loginUsername" placeholder="username" required>
-                    </div>
+            <div class="profile-meta">
+                <h2 id="profileUsername">Гость</h2>
+                <p id="profileUserId">@username</p>
+                <div class="profile-badges">
+                    <span class="badge online" id="onlineBadge">В сети</span>
+                    <span class="badge premium" id="premiumBadge">PREMIUM</span>
                 </div>
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" id="loginPassword" placeholder="Введите пароль" required>
+                
+                <!-- Копирование ссылки на профиль -->
+                <div class="profile-link-container">
+                    <input type="text" readonly class="profile-link-input" id="profileLink" value="https://neochat.com/@username">
+                    <button class="copy-link-btn" id="copyProfileLinkBtn" title="Скопировать ссылку">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
-                <button type="submit" class="auth-btn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Войти в аккаунт
-                </button>
-            </form>
+            </div>
             
-            <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label>Никнейм</label>
-                    <div class="input-with-prefix">
-                        <span class="input-prefix">@</span>
-                        <input type="text" id="registerUsername" placeholder="username" required>
-                    </div>
-                    <div class="input-hint">От 3 до 20 символов, только буквы, цифры и _</div>
-                </div>
-                <div class="form-group">
-                    <label>Отображаемое имя</label>
-                    <input type="text" id="registerDisplayName" placeholder="Ваше имя" required>
-                </div>
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" id="registerPassword" placeholder="Придумайте пароль" required>
-                    <div class="input-hint">Минимум 6 символов</div>
-                </div>
-                <div class="form-group">
-                    <label>Подтвердите пароль</label>
-                    <input type="password" id="registerConfirmPassword" placeholder="Повторите пароль" required>
-                </div>
-                <div class="form-group">
-                    <label>Страна</label>
-                    <select id="registerCountry">
-                        <option value="">Выберите страну</option>
-                        <option value="Россия">Россия</option>
-                        <option value="Беларусь">Беларусь</option>
-                        <option value="Казахстан">Казахстан</option>
-                        <option value="Украина">Украина</option>
-                        <option value="США">США</option>
-                        <option value="Германия">Германия</option>
-                        <option value="Франция">Франция</option>
-                        <option value="Великобритания">Великобритания</option>
-                    </select>
-                </div>
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="registerAgree" required>
-                    <label for="registerAgree">Я согласен с <a href="#" class="link">правилами использования</a></label>
-                </div>
-                <button type="submit" class="auth-btn">
-                    <i class="fas fa-user-plus"></i>
-                    Создать аккаунт
+            <div class="profile-actions">
+                <button class="btn-primary" id="editProfileBtn">
+                    <i class="fas fa-edit"></i>
+                    Редактировать профиль
                 </button>
-            </form>
+            </div>
         </div>
     </div>
     
-    <!-- Модальное окно настроек -->
-    <div class="modal-overlay hidden" id="settingsModal">
-        <div class="modal settings-modal">
-            <div class="modal-header">
-                <h2 class="modal-title">Настройки</h2>
-                <button class="close-modal" id="closeSettingsModal">&times;</button>
+    <!-- Добавим вкладки профиля -->
+    <div class="profile-tabs">
+        <button class="profile-tab active" data-tab="info">Информация</button>
+        <button class="profile-tab" data-tab="customization">Кастомизация</button>
+        <button class="profile-tab" data-tab="media">Медиа</button>
+        <button class="profile-tab" data-tab="statistics">Статистика</button>
+    </div>
+    
+    <!-- Контент вкладок -->
+    <div class="profile-content">
+        <!-- Вкладка Информация -->
+        <div class="profile-pane active" id="infoPane">
+            <div class="profile-section">
+                <h3><i class="fas fa-user"></i> Личная информация</h3>
+                <div class="info-grid">
+                    <!-- Информация как было -->
+                </div>
             </div>
             
-            <div class="settings-tabs">
-                <button class="settings-tab active" data-tab="appearance">Внешний вид</button>
-                <button class="settings-tab" data-tab="privacy">Приватность</button>
-                <button class="settings-tab" data-tab="notifications">Уведомления</button>
-                <button class="settings-tab" data-tab="chats">Чаты</button>
+            <div class="profile-section">
+                <h3><i class="fas fa-chart-bar"></i> Статистика</h3>
+                <div class="stats-grid">
+                    <!-- Статистика как было -->
+                </div>
             </div>
             
-            <div class="settings-content">
-                <!-- Вкладка Внешний вид -->
-                <div class="settings-pane active" id="appearancePane">
-                    <div class="setting-item">
-                        <h3>Тема приложения</h3>
-                        <div class="theme-selector">
-                            <div class="theme-option active" data-theme="dark">
-                                <div class="theme-preview dark-theme"></div>
-                                <span>Темная</span>
-                            </div>
-                            <div class="theme-option" data-theme="light">
-                                <div class="theme-preview light-theme"></div>
-                                <span>Светлая</span>
-                            </div>
-                            <div class="theme-option" data-theme="green">
-                                <div class="theme-preview green-theme"></div>
-                                <span>Зеленая</span>
-                            </div>
-                            <div class="theme-option" data-theme="blue">
-                                <div class="theme-preview blue-theme"></div>
-                                <span>Синяя</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Размер шрифта</h3>
-                        <div class="font-size-selector">
-                            <button class="font-size-btn" data-size="small">Маленький</button>
-                            <button class="font-size-btn active" data-size="medium">Средний</button>
-                            <button class="font-size-btn" data-size="large">Большой</button>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Скругление углов</h3>
-                        <input type="range" id="borderRadiusSlider" min="0" max="20" value="8">
-                        <div class="slider-value" id="borderRadiusValue">8px</div>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Анимации</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="animationsToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Включить анимации</span>
-                        </label>
-                    </div>
+            <div class="profile-section">
+                <h3><i class="fas fa-shield-alt"></i> Безопасность</h3>
+                <div class="security-actions">
+                    <!-- Безопасность как было -->
                 </div>
-                
-                <!-- Вкладка Приватность -->
-                <div class="settings-pane" id="privacyPane">
-                    <div class="setting-item">
-                        <h3>Кто может писать мне</h3>
-                        <div class="radio-group">
-                            <label class="radio">
-                                <input type="radio" name="whoCanMessage" value="everyone" checked>
-                                <span class="radio-checkmark"></span>
-                                <span>Все пользователи</span>
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="whoCanMessage" value="contacts">
-                                <span class="radio-checkmark"></span>
-                                <span>Только контакты</span>
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="whoCanMessage" value="nobody">
-                                <span class="radio-checkmark"></span>
-                                <span>Никто</span>
-                            </label>
-                        </div>
+            </div>
+        </div>
+        
+        <!-- НОВАЯ ВКЛАДКА: Кастомизация -->
+        <div class="profile-pane" id="customizationPane">
+            <div class="profile-section">
+                <h3><i class="fas fa-palette"></i> Цвет профиля</h3>
+                <div class="color-picker-container">
+                    <p>Выберите акцентный цвет для вашего профиля:</p>
+                    <div class="color-palette" id="colorPalette">
+                        <div class="color-option" style="background: #00ff88;" data-color="#00ff88"></div>
+                        <div class="color-option" style="background: #5865f2;" data-color="#5865f2"></div>
+                        <div class="color-option" style="background: #ff5555;" data-color="#ff5555"></div>
+                        <div class="color-option" style="background: #ffaa00;" data-color="#ffaa00"></div>
+                        <div class="color-option" style="background: #9b59b6;" data-color="#9b59b6"></div>
+                        <div class="color-option" style="background: #1abc9c;" data-color="#1abc9c"></div>
+                        <div class="color-option" style="background: #3498db;" data-color="#3498db"></div>
+                        <div class="color-option" style="background: #e74c3c;" data-color="#e74c3c"></div>
+                        <div class="color-option" style="background: #2ecc71;" data-color="#2ecc71"></div>
+                        <div class="color-option" style="background: #f1c40f;" data-color="#f1c40f"></div>
                     </div>
-                    
-                    <div class="setting-item">
-                        <h3>Статус онлайн</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="onlineStatusToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Показывать статус онлайн</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Время последнего посещения</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="lastSeenToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Показывать время последнего посещения</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Пересылка сообщений</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="forwardingToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Разрешить пересылку моих сообщений</span>
-                        </label>
-                    </div>
+                    <input type="color" id="customColorPicker" class="hidden">
+                    <button class="btn-secondary" id="chooseCustomColorBtn">
+                        <i class="fas fa-eyedropper"></i>
+                        Выбрать свой цвет
+                    </button>
                 </div>
-                
-                <!-- Вкладка Уведомления -->
-                <div class="settings-pane" id="notificationsPane">
-                    <div class="setting-item">
-                        <h3>Уведомления о сообщениях</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="messageNotificationsToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Включить уведомления</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Звук уведомлений</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="soundToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Воспроизводить звук</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Тип уведомлений</h3>
-                        <select id="notificationType">
-                            <option value="all">Все сообщения</option>
-                            <option value="mentions">Только упоминания</option>
-                            <option value="contacts">Только от контактов</option>
-                            <option value="none">Никакие</option>
-                        </select>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Показывать предпросмотр</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="previewToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Показывать текст сообщения</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Вкладка Чаты -->
-                <div class="settings-pane" id="chatsPane">
-                    <div class="setting-item">
-                        <h3>Сохранение истории</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="saveHistoryToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Сохранять историю чатов</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Автоудаление сообщений</h3>
-                        <select id="autoDeleteMessages">
-                            <option value="never">Никогда</option>
-                            <option value="day">Через 24 часа</option>
-                            <option value="week">Через неделю</option>
-                            <option value="month">Через месяц</option>
-                        </select>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Синхронизация между устройствами</h3>
-                        <label class="switch">
-                            <input type="checkbox" id="syncToggle" checked>
-                            <span class="slider"></span>
-                            <span class="switch-label">Включить синхронизацию</span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Показать скрытые чаты</h3>
-                        <button class="btn-secondary" id="showHiddenChatsBtn">
-                            <i class="fas fa-eye"></i>
-                            Показать
+            </div>
+            
+            <div class="profile-section">
+                <h3><i class="fas fa-image"></i> Баннер профиля</h3>
+                <div class="banner-preview-container">
+                    <div class="banner-preview" id="bannerPreview"></div>
+                    <div class="banner-actions">
+                        <button class="btn-secondary" id="uploadBannerBtn">
+                            <i class="fas fa-upload"></i>
+                            Загрузить баннер
                         </button>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <h3>Очистить историю</h3>
-                        <button class="btn-danger" id="clearHistoryBtn">
+                        <button class="btn-secondary" id="removeBannerBtn">
                             <i class="fas fa-trash"></i>
-                            Очистить все чаты
+                            Удалить баннер
                         </button>
+                    </div>
+                    <p class="hint">Рекомендуемый размер: 1500x500 пикселей</p>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <h3><i class="fas fa-user-circle"></i> Аватар</h3>
+                <div class="avatar-options">
+                    <div class="avatar-preview-container">
+                        <div class="avatar-preview large" id="avatarPreview"></div>
+                        <div class="avatar-actions">
+                            <button class="btn-secondary" id="uploadAvatarBtn">
+                                <i class="fas fa-upload"></i>
+                                Загрузить фото
+                            </button>
+                            <button class="btn-secondary" id="generateAvatarBtn">
+                                <i class="fas fa-random"></i>
+                                Сгенерировать аватар
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="settings-footer">
-                <button class="btn-secondary" id="resetSettingsBtn">
+            <div class="profile-section">
+                <h3><i class="fas fa-paint-brush"></i> Темы профиля</h3>
+                <div class="profile-themes">
+                    <div class="profile-theme-option active" data-theme="default">
+                        <div class="theme-preview default-theme"></div>
+                        <span>По умолчанию</span>
+                    </div>
+                    <div class="profile-theme-option" data-theme="gradient">
+                        <div class="theme-preview gradient-theme"></div>
+                        <span>Градиент</span>
+                    </div>
+                    <div class="profile-theme-option" data-theme="glass">
+                        <div class="theme-preview glass-theme"></div>
+                        <span>Стекло</span>
+                    </div>
+                    <div class="profile-theme-option" data-theme="dark">
+                        <div class="theme-preview dark-theme"></div>
+                        <span>Темная</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions-footer">
+                <button class="btn-secondary" id="resetCustomizationBtn">
                     <i class="fas fa-redo"></i>
-                    Сбросить настройки
+                    Сбросить кастомизацию
                 </button>
-                <button class="btn-primary" id="saveSettingsBtn">
+                <button class="btn-primary" id="saveCustomizationBtn">
                     <i class="fas fa-save"></i>
                     Сохранить изменения
                 </button>
             </div>
         </div>
-    </div>
-    
-    <!-- Уведомления -->
-    <div id="notificationContainer"></div>
-    
-    <!-- Основное приложение -->
-    <div class="app-container hidden" id="appContainer">
-        <!-- Боковая панель -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-comment-alt"></i>
-                    <span class="logo-text">NeoChat</span>
-                </div>
+        
+        <!-- Вкладка Медиа -->
+        <div class="profile-pane" id="mediaPane">
+            <div class="media-filter">
+                <button class="media-filter-btn active" data-type="all">Все</button>
+                <button class="media-filter-btn" data-type="photos">Фото</button>
+                <button class="media-filter-btn" data-type="videos">Видео</button>
+                <button class="media-filter-btn" data-type="files">Файлы</button>
             </div>
-            
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-page="chats">
-                    <i class="fas fa-comment"></i>
-                    <span class="nav-text">Чаты</span>
-                    <span class="nav-badge" id="unreadTotal">0</span>
-                </a>
-                <a href="#" class="nav-item" data-page="search">
-                    <i class="fas fa-search"></i>
-                    <span class="nav-text">Поиск</span>
-                </a>
-                <a href="#" class="nav-item" data-page="contacts">
-                    <i class="fas fa-users"></i>
-                    <span class="nav-text">Контакты</span>
-                    <span class="nav-badge" id="contactsCount">0</span>
-                </a>
-                <a href="#" class="nav-item" data-page="groups">
-                    <i class="fas fa-user-group"></i>
-                    <span class="nav-text">Группы</span>
-                </a>
-                <a href="#" class="nav-item" data-page="profile">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-text">Профиль</span>
-                </a>
-                <a href="#" class="nav-item" data-page="settings">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Настройки</span>
-                </a>
-            </nav>
-            
-            <div class="user-profile" id="userProfile">
-                <div class="user-avatar online" id="userAvatar">
-                    Г
-                </div>
-                <div class="user-info">
-                    <div class="username" id="sidebarUsername">Гость</div>
-                    <div class="user-status" id="sidebarStatus">В сети</div>
-                </div>
-                <div class="user-menu-toggle">
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-            </div>
-            
-            <div class="user-menu" id="userMenu">
-                <a href="#" class="user-menu-item" data-action="status">
-                    <i class="fas fa-circle"></i>
-                    <span>Изменить статус</span>
-                </a>
-                <a href="#" class="user-menu-item" data-action="theme">
-                    <i class="fas fa-palette"></i>
-                    <span>Изменить тему</span>
-                </a>
-                <a href="#" class="user-menu-item" data-action="logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Выйти</span>
-                </a>
+            <div class="media-grid" id="mediaGrid">
+                <!-- Медиафайлы будут загружаться здесь -->
             </div>
         </div>
         
-        <!-- Основная область контента -->
-        <div class="main-content">
-            <!-- Поисковая строка -->
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="globalSearch" placeholder="Поиск пользователей по @username...">
-                    <div class="search-results" id="searchResults"></div>
-                </div>
-                <div class="search-actions">
-                    <button class="search-filter-btn active" data-filter="all">
-                        <i class="fas fa-globe"></i>
-                        Все
-                    </button>
-                    <button class="search-filter-btn" data-filter="online">
-                        <i class="fas fa-circle"></i>
-                        Онлайн
-                    </button>
-                    <button class="search-filter-btn" data-filter="contacts">
-                        <i class="fas fa-user-check"></i>
-                        Контакты
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Список чатов -->
-            <div class="chats-container" id="chatsPage">
-                <div class="section-header">
-                    <h2 class="section-title">Мои чаты</h2>
-                    <div class="section-actions">
-                        <button class="icon-btn" id="markAllReadBtn" title="Прочитать все">
-                            <i class="fas fa-check-double"></i>
-                        </button>
-                        <button class="new-chat-btn" id="newChatBtn">
-                            <i class="fas fa-plus"></i>
-                            Новый чат
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="chats-filters">
-                    <button class="chat-filter-btn active" data-filter="all">Все</button>
-                    <button class="chat-filter-btn" data-filter="unread">Непрочитанные</button>
-                    <button class="chat-filter-btn" data-filter="pinned">Закрепленные</button>
-                    <button class="chat-filter-btn" data-filter="groups">Группы</button>
-                </div>
-                
-                <div class="chats-list" id="chatsList">
-                    <!-- Список чатов будет генерироваться JavaScript -->
-                </div>
-                
-                <div class="empty-state" id="emptyChatsState">
-                    <i class="fas fa-comments"></i>
-                    <h3>Нет активных чатов</h3>
-                    <p>Начните общение с кем-нибудь</p>
-                    <button class="btn-primary" id="findPeopleBtn">
-                        <i class="fas fa-search"></i>
-                        Найти людей
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Поиск людей -->
-            <div class="chats-container hidden" id="searchPage">
-                <div class="section-header">
-                    <h2 class="section-title">Поиск людей</h2>
-                    <div class="search-sort">
-                        <select id="searchSort">
-                            <option value="relevance">По релевантности</option>
-                            <option value="online">Сначала онлайн</option>
-                            <option value="new">Сначала новые</option>
-                            <option value="name">По имени</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="search-page-results" id="searchResultsPage">
-                    <!-- Результаты поиска будут генерироваться JavaScript -->
-                </div>
-                
-                <div class="search-loading hidden" id="searchLoading">
-                    <div class="loading"></div>
-                    <p>Идет поиск...</p>
-                </div>
-            </div>
-            
-            <!-- Контакты -->
-            <div class="chats-container hidden" id="contactsPage">
-                <div class="section-header">
-                    <h2 class="section-title">Мои контакты</h2>
-                    <button class="btn-secondary" id="importContactsBtn">
-                        <i class="fas fa-upload"></i>
-                        Импортировать
-                    </button>
-                </div>
-                
-                <div class="contacts-actions">
-                    <input type="text" class="search-contacts" id="searchContacts" placeholder="Поиск в контактах...">
-                    <button class="icon-btn" id="addContactBtn" title="Добавить контакт">
-                        <i class="fas fa-user-plus"></i>
-                    </button>
-                </div>
-                
-                <div class="contacts-list" id="contactsList">
-                    <!-- Список контактов будет генерироваться JavaScript -->
-                </div>
-                
-                <div class="empty-state" id="emptyContactsState">
-                    <i class="fas fa-user-friends"></i>
-                    <h3>Нет контактов</h3>
-                    <p>Найдите и добавьте людей в контакты</p>
-                </div>
-            </div>
-            
-            <!-- Группы -->
-            <div class="chats-container hidden" id="groupsPage">
-                <div class="section-header">
-                    <h2 class="section-title">Группы</h2>
-                    <button class="new-chat-btn" id="createGroupBtn">
-                        <i class="fas fa-users"></i>
-                        Создать группу
-                    </button>
-                </div>
-                
-                <div class="groups-list" id="groupsList">
-                    <!-- Список групп будет генерироваться JavaScript -->
-                </div>
-                
-                <div class="empty-state" id="emptyGroupsState">
-                    <i class="fas fa-users"></i>
-                    <h3>Нет групп</h3>
-                    <p>Создайте свою первую группу</p>
-                </div>
-            </div>
-            
-            <!-- Профиль -->
-            <div class="chats-container hidden" id="profilePage">
-                <div class="profile-header">
-                    <div class="profile-avatar-container">
-                        <div class="profile-avatar large" id="profileAvatar">
-                            Г
-                        </div>
-                        <button class="avatar-edit-btn" id="changeAvatarBtn">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                    </div>
-                    <h2 id="profileUsername">Гость</h2>
-                    <p id="profileUserId">@username</p>
-                    <div class="profile-badges">
-                        <span class="badge online">В сети</span>
-                        <span class="badge premium" id="premiumBadge">PREMIUM</span>
-                    </div>
-                </div>
-                
-                <div class="profile-content">
-                    <div class="profile-section">
-                        <h3><i class="fas fa-user"></i> Личная информация</h3>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Имя</span>
-                                <span class="info-value" id="profileDisplayName">-</span>
-                                <button class="info-edit" data-field="displayName">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Никнейм</span>
-                                <span class="info-value" id="profileUsernameField">@username</span>
-                                <button class="info-edit" data-field="username">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Страна</span>
-                                <span class="info-value" id="profileCountry">-</span>
-                                <button class="info-edit" data-field="country">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">О себе</span>
-                                <span class="info-value" id="profileBio">Не указано</span>
-                                <button class="info-edit" data-field="bio">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-section">
-                        <h3><i class="fas fa-chart-bar"></i> Статистика</h3>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-comment"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="activeChatsCount">0</div>
-                                    <div class="stat-label">Активных чатов</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-user-friends"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="contactsCountProfile">0</div>
-                                    <div class="stat-label">Контактов</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="groupsCount">0</div>
-                                    <div class="stat-label">Групп</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="accountAge">0</div>
-                                    <div class="stat-label">Дней в NeoChat</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-section">
-                        <h3><i class="fas fa-shield-alt"></i> Безопасность</h3>
-                        <div class="security-actions">
-                            <button class="security-btn" id="changePasswordBtn">
-                                <i class="fas fa-key"></i>
-                                <span>Изменить пароль</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <button class="security-btn" id="twoFactorBtn">
-                                <i class="fas fa-mobile-alt"></i>
-                                <span>Двухфакторная аутентификация</span>
-                                <span class="security-status off">Выключена</span>
-                            </button>
-                            <button class="security-btn" id="sessionsBtn">
-                                <i class="fas fa-desktop"></i>
-                                <span>Активные сессии</span>
-                                <span class="security-status">1 устройство</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Настройки -->
-            <div class="chats-container hidden" id="settingsPage">
-                <div class="section-header">
-                    <h2 class="section-title">Настройки</h2>
-                </div>
-                
-                <div class="settings-quick">
-                    <button class="settings-card" data-action="appearance">
-                        <i class="fas fa-palette"></i>
-                        <span>Внешний вид</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="settings-card" data-action="privacy">
-                        <i class="fas fa-lock"></i>
-                        <span>Приватность</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="settings-card" data-action="notifications">
-                        <i class="fas fa-bell"></i>
-                        <span>Уведомления</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="settings-card" data-action="chats">
-                        <i class="fas fa-comments"></i>
-                        <span>Чаты</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="settings-card" data-action="security">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Безопасность</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="settings-card" data-action="storage">
-                        <i class="fas fa-database"></i>
-                        <span>Хранилище</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Окно чата -->
-        <div class="chat-window hidden" id="chatWindow">
-            <div class="chat-header">
-                <button class="back-button" id="backButton">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                
-                <div class="chat-user-info">
-                    <div class="chat-avatar" id="currentChatAvatar">
-                        Г
-                    </div>
-                    <div>
-                        <div class="chat-title" id="currentChatName">Администратор</div>
-                        <div class="chat-status" id="currentChatStatus">В сети</div>
-                    </div>
-                </div>
-                
-                <div class="chat-actions">
-                    <button class="chat-action-btn" id="callButton" title="Аудиозвонок">
-                        <i class="fas fa-phone"></i>
-                    </button>
-                    <button class="chat-action-btn" id="videoButton" title="Видеозвонок">
-                        <i class="fas fa-video"></i>
-                    </button>
-                    <button class="chat-action-btn" id="searchChatButton" title="Поиск в чате">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="chat-action-btn" id="chatMenuButton" title="Меню чата">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="messages-container" id="messagesContainer">
-                <!-- Сообщения будут генерироваться JavaScript -->
-            </div>
-            
-            <div class="message-input-container">
-                <div class="message-input-wrapper">
-                    <div class="input-actions">
-                        <button class="input-action-btn" id="attachButton" title="Прикрепить файл">
-                            <i class="fas fa-paperclip"></i>
-                        </button>
-                        <button class="input-action-btn" id="photoButton" title="Фотография">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                        <button class="input-action-btn" id="audioButton" title="Голосовое сообщение">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                    </div>
-                    
-                    <textarea class="message-input" id="messageInput" placeholder="Введите сообщение..." rows="1"></textarea>
-                    
-                    <div class="input-actions right">
-                        <button class="input-action-btn" id="emojiButton" title="Эмодзи">
-                            <i class="far fa-smile"></i>
-                        </button>
-                        <button class="input-action-btn hidden" id="audioSendButton" title="Отправить голосовое">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                        <button class="send-button" id="sendButton" title="Отправить">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="message-input-tools hidden" id="messageTools">
-                    <div class="tool-item" data-type="image">
-                        <i class="fas fa-image"></i>
-                        <span>Фото</span>
-                    </div>
-                    <div class="tool-item" data-type="video">
-                        <i class="fas fa-video"></i>
-                        <span>Видео</span>
-                    </div>
-                    <div class="tool-item" data-type="file">
-                        <i class="fas fa-file"></i>
-                        <span>Документ</span>
-                    </div>
-                    <div class="tool-item" data-type="location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Местоположение</span>
-                    </div>
-                    <div class="tool-item" data-type="contact">
-                        <i class="fas fa-user"></i>
-                        <span>Контакт</span>
-                    </div>
-                </div>
+        <!-- Вкладка Статистика -->
+        <div class="profile-pane" id="statisticsPane">
+            <div class="stats-charts">
+                <!-- Графики статистики -->
             </div>
         </div>
     </div>
-    
-    <!-- Скрытые элементы -->
-    <input type="file" id="fileInput" class="hidden" accept="*">
-    <input type="file" id="imageInput" class="hidden" accept="image/*">
-    <input type="file" id="avatarInput" class="hidden" accept="image/*">
-    
-    <script src="auth.js"></script>
-    <script src="app.js"></script>
-    <script src="config.js"></script>
-</body>
-</html>
+</div>
